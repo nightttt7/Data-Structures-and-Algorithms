@@ -1,6 +1,7 @@
 def now():
     print('2015-3-25')
 
+
 f = now
 f()
 
@@ -10,6 +11,7 @@ f.__name__
 
 # 增强now()函数的功能
 # 动态增加功能的方式，称之为“装饰器”(Decorator)
+
 
 def log(func):
     def wrapper(*args, **kw):
@@ -21,11 +23,16 @@ def log(func):
 # func: 被装饰的函数
 # wrapper: 增加的功能
 
+
 @log
-def now():
+def now1():
     print('2015-3-25')
 
 # 相当于执行了语句
-# now = log(now)
+# now1 = log(now1)
 
-now()
+
+now1()
+
+# @functools.wraps(func)
+# 用于复制原函数的属性

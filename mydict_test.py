@@ -35,3 +35,6 @@ class TestDict(unittest.TestCase):
 
 # how to unittest
 # python -m unittest mydict_test
+
+# 可以在单元测试中编写两个特殊的setUp()和tearDown()方法
+# 这两个方法会分别在每调用一个测试方法的前后分别被执行

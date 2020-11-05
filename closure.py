@@ -15,20 +15,22 @@ f
 # 调用f时,才会返回函数结果
 f()
 
-# f这种函数结构被称作闭包
+# f这种函数结构被称作闭包(Closure)
 
 
 # 返回闭包时牢记一点
 # 返回函数不要引用任何循环变量
 # 或者后续会发生变化的变量
 
+
 def count():
     fs = []
     for i in range(1, 4):
         def f():
-             return i*i
+            return i*i
         fs.append(f)
     return fs
+
 
 f1, f2, f3 = count()
 f1()

@@ -1,1 +1,3 @@
-
+- practice codes
+- save for reviewing
+- references: "Python cookbook 3", "www.liaoxuefeng.com", "MDN"

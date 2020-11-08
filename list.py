@@ -1,4 +1,3 @@
-# %%
 # name the slice
 items = list(range(1, 41))
 
@@ -17,5 +16,3 @@ words = [
 
 from collections import Counter
 Counter(words).most_common(3)
-
-# %%

@@ -1,4 +1,3 @@
-# %%
 # stream of token
 import re
 from collections import namedtuple
@@ -33,5 +32,3 @@ for tok in generate_tokens(master_pat, 'foo = 42'):
 # Token(type='EQ', value='=')
 # Token(type='WS', value=' ')
 # Token(type='NUM', value='42')
-
-# %%

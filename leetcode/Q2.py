@@ -12,8 +12,10 @@ def addTwoNumbers(l1, l2):
     # dummy head
     # (means we will delete this head at last)
     # (we return head.next but not head)
-    curr = ListNode()
-    head = curr
+    # head and curr are the same one ListNode object now
+    # change on head or curr will change this object
+    head = ListNode()
+    curr = head
     # over the head
     # end of l1 or l2 are None
     while l1 or l2:
@@ -25,6 +27,7 @@ def addTwoNumbers(l1, l2):
             val = val+l2.val
             l2 = l2.next
         curr.next = ListNode(val=val % 10)
+        # head and curr are not be the same one ListNode object from here
         curr = curr.next
         # interesting, // here will be escaped to / in some webs
         carry = val // 10

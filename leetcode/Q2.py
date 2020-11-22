@@ -14,6 +14,7 @@ def addTwoNumbers(l1, l2):
     # (we return head.next but not head)
     # head and curr are the same one ListNode object now
     # change on head or curr will change this object
+    # the order of head and curr is not matter
     head = ListNode()
     curr = head
     # over the head

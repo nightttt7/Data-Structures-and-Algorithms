@@ -1,3 +1,7 @@
+# references:
+#   https://blog.csdn.net/xutiantian1412/article/details/79619674
+
+
 # example of a (single) linked list
 class ListNode(object):
     def __init__(self, val=None, next=None):

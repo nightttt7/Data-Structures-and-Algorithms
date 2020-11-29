@@ -213,7 +213,7 @@ def bucket_sort(nums):
 # Radix sort
 # O(kn)
 # non-comparing method
-# d: biggest digital
+# d: biggest number of digital
 # LSD (Least significant digital), start from ones digital
 def lsd_sort(nums):
     nums = deepcopy(nums)

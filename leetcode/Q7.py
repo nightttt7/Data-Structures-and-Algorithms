@@ -1,5 +1,6 @@
 def int_reverse(x):
     if x < 0:
+        # NB! for negative step, start from 'end', end to 'start'
         num_str = str(x)[:0:-1]
         symbol = -1
     else:

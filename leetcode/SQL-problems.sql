@@ -142,7 +142,7 @@ UPDATE salary SET sex=IF(sex='m', 'f', 'm');
 
 -- Q1179
 -- use many LEFT JOIN for query below
-SELECT id, revenue as Jan_Revenue FROM Department d1 WHERE month='Jan'
+SELECT id, revenue as Jan_Revenue FROM Department d1 WHERE month='Jan';
 -- complete solution, pay attention to (SELECT DISTINCT id FROM Department)
 SELECT d.id,
 d_jan.revenue AS Jan_Revenue,
@@ -169,7 +169,7 @@ LEFT JOIN Department d_aug ON d_aug.id = d.id AND d_aug.month = 'Aug'
 LEFT JOIN Department d_sep ON d_sep.id = d.id AND d_sep.month = 'Sep'
 LEFT JOIN Department d_oct ON d_oct.id = d.id AND d_oct.month = 'Oct'
 LEFT JOIN Department d_nov ON d_nov.id = d.id AND d_nov.month = 'Nov'
-LEFT JOIN Department d_dec ON d_dec.id = d.id AND d_dec.month = 'Dec'
+LEFT JOIN Department d_dec ON d_dec.id = d.id AND d_dec.month = 'Dec';
 
 -- or use GROUP BY
 -- pay attention to MAX(), for each group we need to find the only no null value
@@ -186,4 +186,77 @@ MAX(IF(month = 'Sep', revenue, NULL)) AS Sep_Revenue,
 MAX(IF(month = 'Oct', revenue, NULL)) AS Oct_Revenue,
 MAX(IF(month = 'Nov', revenue, NULL)) AS Nov_Revenue,
 MAX(IF(month = 'Dec', revenue, NULL)) AS Dec_Revenue
-FROM Department GROUP BY id
+FROM Department GROUP BY id;
+
+-- Q511
+-- Game Play Analysis 1
+-- 1. first login date
+SELECT player_id, MIN(event_date) AS first_login
+FROM Activity
+GROUP BY player_id
+
+-- Q512
+-- Game Play Analysis 2
+-- first device for each player
+-- sub-query
+SELECT player_id, device_id
+FROM Activity
+WHERE (player_id, event_date) IN
+(SELECT player_id, MIN(event_date) AS first_login
+ FROM Activity
+ GROUP BY player_id);
+
+-- FIRST_VALUE and PARTITION BY
+-- must add DISTINCT
+SELECT
+DISTINCT player_id,
+FIRST_VALUE(device_id) OVER ( PARTITION BY player_id ORDER BY event_date) AS device_id
+FROM
+Activity;
+
+-- Q534
+-- Game Play Analysis 3
+-- self join is useful, get cumsum
+SELECT a1.player_id, a1.event_date, SUM(a2.games_played) AS games_played_so_far 
+FROM Activity a1 Join Activity a2 
+ON a1.player_id = a2.player_id AND a1.event_date >= a2.event_date
+GROUP BY a1.player_id, a1.event_date
+
+-- Q550
+-- Game Play Analysis 4
+-- if julianday worked, use it
+-- use * 1.0 to get float
+SELECT ROUND(
+  SUM(CASE WHEN a1.event_date - a2.first_login = 1 THEN 1 ELSE 0 END) * 1.0
+  / COUNT(DISTINCT a1.player_id), 2) AS fraction
+FROM Activity a1 Join
+(SELECT player_id, MIN(event_date) AS first_login
+ FROM Activity
+ GROUP BY player_id) a2 
+ON a1.player_id = a2.player_id
+
+-- Q569
+-- Median Employee Salary
+-- how to use WITH
+-- use ROW_NUMBER(continous and unique) but not RANK(skip the rank) or DENSE_RANK(continuous but duplicate rank)
+WIth c AS (SELECT Company, COUNT(Salary) AS c FROM Employee GROUP BY Company),
+     r AS (SELECT Id, Company, Salary,
+           ROW_NUMBER() OVER(PARTITION BY Company ORDER BY Salary) AS r 
+           FROM Employee)
+SELECT r.Id, r.Company, r.Salary FROM r join c on r.Company = c.Company
+WHERE r.r in (MAX(c.c/2, (c.c+1)/2), c.c/2+1);
+
+-- Q570 easy
+SELECT e1.name
+FROM Employee e1 JOIN Employee e2
+ON e1.id = e2.Managerid
+GROUP BY e1.id
+HAVING COUNT(e2.id) >= 5;
+
+-- Q574
+-- DESC: from big to small
+SELECT Name FROM Candidate 
+WHERE id = (SELECT CandidateId FROM Vote GROUP BY CandidateId ORDER BY COUNT(CandidateId) DESC LIMIT 1);
+
+-- Q578
+-- 

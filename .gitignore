@@ -1,3 +1,6 @@
+# csv files in SQL
+/SQL/*.csv
+
 # environment
 .env
 

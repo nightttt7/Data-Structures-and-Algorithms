@@ -2,16 +2,17 @@
 -- use LEFT JOIN to show all person even has no address
 -- very common interview question
 SELECT FirstName, LastName, City, State
-FROM Person LEFT JOIN Address
-ON Person.PersonID = Address.PersonID
-;
+FROM Person
+  LEFT JOIN Address ON Person.PersonID = Address.PersonID;
 
 -- Q176
 -- use the outer SELECT to return NULL if there is no second highest salary
-SELECT
-(SELECT DISTINCT Salary AS SecondHighestSalary FROM Employee ORDER BY Salary DESC LIMIT 1 OFFSET 1)
-AS SecondHighestSalary
-;
+SELECT (
+    SELECT DISTINCT Salary AS SecondHighestSalary
+    FROM Employee
+    ORDER BY Salary DESC
+    LIMIT 1 OFFSET 1
+  ) AS SecondHighestSalary;
 
 -- Q177
 -- know how to create a function
@@ -28,13 +29,13 @@ END
 -- Q178
 -- DENSE_RANK() OVER(ORDER BY x [DESC]), return the rank or DESC rank of x
 -- Unlike the RANK() function, the DENSE_RANK() function always returns consecutive rank values.
-SELECT Score, DENSE_RANK() OVER(ORDER BY Score DESC) AS 'Rank' FROM Scores
+SELECT Score, DENSE_RANK() OVER(ORDER BY Score DESC) AS 'Rank' FROM Scores;
 
 -- Q180
 -- find all numbers that appear at least three times consecutively
 -- use l1, l2, l3 as alias for table logs
 SELECT DISTINCT l1.Num AS ConsecutiveNums FROM Logs l1, Logs l2, Logs l3
-WHERE l1.Id = l2.Id-1 AND l2.Id = l3.Id - 1 AND l1.Num = l2.Num AND l2.Num = l3.Num
+WHERE l1.Id = l2.Id-1 AND l2.Id = l3.Id - 1 AND l1.Num = l2.Num AND l2.Num = l3.Num;
 
 -- Q181
 -- Still alias for table
@@ -58,7 +59,7 @@ SELECT customers.name AS 'Customers' FROM customers WHERE customers.id NOT IN
 -- Q184
 -- use sub-query
 -- inner query:
-SELECT DepartmentId, MAX(Salary) FROM Employee GROUP BY DepartmentId
+SELECT DepartmentId, MAX(Salary) FROM Employee GROUP BY DepartmentId;
 -- then select employee whose salary in inner query
 
 -- Q185
@@ -75,7 +76,7 @@ WHERE DeptPayRank <=3;
 DELETE p1 FROM Person p1, Person p2 WHERE p1.Email = p2.Email AND p1.Id > p2.Id;
 
 -- Another way, use ROW_NUMBER(), inner query:
-DELETE ROW_NUMBER() OVER (PARTITION BY email ORDER BY id) rownum FROM person
+DELETE ROW_NUMBER() OVER (PARTITION BY email ORDER BY id) rownum FROM person;
 
 -- Q197
 -- higher temperature compared to its previous dates (yesterday)
@@ -96,10 +97,10 @@ FROM Trips WHERE
 Client_Id NOT IN (SELECT Users_ID FROM Users Where Banned = 'Yes')
 AND Driver_Id NOT IN (SELECT Users_ID FROM Users Where Banned = 'Yes')
 AND (Request_at BETWEEN '2013-10-01' AND '2013-10-03')
-GROUP BY Request_at
+GROUP BY Request_at;
 
 -- Q595 easy
-SELECT name, population, area FROM World WHERE population > 25000000 OR area > 3000000
+SELECT name, population, area FROM World WHERE population > 25000000 OR area > 3000000;
 
 -- Q596 easy
 -- But must use DISTINCT, there may be duplicate student names in one class
@@ -145,55 +146,56 @@ UPDATE salary SET sex=IF(sex='m', 'f', 'm');
 SELECT id, revenue as Jan_Revenue FROM Department d1 WHERE month='Jan';
 -- complete solution, pay attention to (SELECT DISTINCT id FROM Department)
 SELECT d.id,
-d_jan.revenue AS Jan_Revenue,
-d_feb.revenue AS Feb_Revenue,
-d_mar.revenue AS Mar_Revenue,
-d_apr.revenue AS Apr_Revenue,
-d_may.revenue AS May_Revenue,
-d_jun.revenue AS Jun_Revenue,
-d_jul.revenue AS Jul_Revenue,
-d_aug.revenue AS Aug_Revenue,
-d_sep.revenue AS Sep_Revenue,
-d_oct.revenue AS Oct_Revenue,
-d_nov.revenue AS Nov_Revenue,
-d_dec.revenue AS Dec_Revenue
+  d_jan.revenue AS Jan_Revenue,
+  d_feb.revenue AS Feb_Revenue,
+  d_mar.revenue AS Mar_Revenue,
+  d_apr.revenue AS Apr_Revenue,
+  d_may.revenue AS May_Revenue,
+  d_jun.revenue AS Jun_Revenue,
+  d_jul.revenue AS Jul_Revenue,
+  d_aug.revenue AS Aug_Revenue,
+  d_sep.revenue AS Sep_Revenue,
+  d_oct.revenue AS Oct_Revenue,
+  d_nov.revenue AS Nov_Revenue,
+  d_dec.revenue AS Dec_Revenue
 FROM (SELECT DISTINCT id FROM Department) AS d
-LEFT JOIN Department d_jan ON d_jan.id = d.id AND d_jan.month = 'Jan'
-LEFT JOIN Department d_feb ON d_feb.id = d.id AND d_feb.month = 'Feb'
-LEFT JOIN Department d_mar ON d_mar.id = d.id AND d_mar.month = 'Mar'
-LEFT JOIN Department d_apr ON d_apr.id = d.id AND d_apr.month = 'Apr'
-LEFT JOIN Department d_may ON d_may.id = d.id AND d_may.month = 'May'
-LEFT JOIN Department d_jun ON d_jun.id = d.id AND d_jun.month = 'Jun'
-LEFT JOIN Department d_jul ON d_jul.id = d.id AND d_jul.month = 'Jul'
-LEFT JOIN Department d_aug ON d_aug.id = d.id AND d_aug.month = 'Aug'
-LEFT JOIN Department d_sep ON d_sep.id = d.id AND d_sep.month = 'Sep'
-LEFT JOIN Department d_oct ON d_oct.id = d.id AND d_oct.month = 'Oct'
-LEFT JOIN Department d_nov ON d_nov.id = d.id AND d_nov.month = 'Nov'
-LEFT JOIN Department d_dec ON d_dec.id = d.id AND d_dec.month = 'Dec';
+  LEFT JOIN Department d_jan ON d_jan.id = d.id AND d_jan.month = 'Jan'
+  LEFT JOIN Department d_feb ON d_feb.id = d.id AND d_feb.month = 'Feb'
+  LEFT JOIN Department d_mar ON d_mar.id = d.id AND d_mar.month = 'Mar'
+  LEFT JOIN Department d_apr ON d_apr.id = d.id AND d_apr.month = 'Apr'
+  LEFT JOIN Department d_may ON d_may.id = d.id AND d_may.month = 'May'
+  LEFT JOIN Department d_jun ON d_jun.id = d.id AND d_jun.month = 'Jun'
+  LEFT JOIN Department d_jul ON d_jul.id = d.id AND d_jul.month = 'Jul'
+  LEFT JOIN Department d_aug ON d_aug.id = d.id AND d_aug.month = 'Aug'
+  LEFT JOIN Department d_sep ON d_sep.id = d.id AND d_sep.month = 'Sep'
+  LEFT JOIN Department d_oct ON d_oct.id = d.id AND d_oct.month = 'Oct'
+  LEFT JOIN Department d_nov ON d_nov.id = d.id AND d_nov.month = 'Nov'
+  LEFT JOIN Department d_dec ON d_dec.id = d.id AND d_dec.month = 'Dec';
 
 -- or use GROUP BY
 -- pay attention to MAX(), for each group we need to find the only no null value
 SELECT id,
-MAX(IF(month = 'Jan', revenue, NULL)) AS Jan_Revenue,
-MAX(IF(month = 'Feb', revenue, NULL)) AS Feb_Revenue,
-MAX(IF(month = 'Mar', revenue, NULL)) AS Mar_Revenue,
-MAX(IF(month = 'Apr', revenue, NULL)) AS Apr_Revenue,
-MAX(IF(month = 'May', revenue, NULL)) AS May_Revenue,
-MAX(IF(month = 'Jun', revenue, NULL)) AS Jun_Revenue,
-MAX(IF(month = 'Jul', revenue, NULL)) AS Jul_Revenue,
-MAX(IF(month = 'Aug', revenue, NULL)) AS Aug_Revenue,
-MAX(IF(month = 'Sep', revenue, NULL)) AS Sep_Revenue,
-MAX(IF(month = 'Oct', revenue, NULL)) AS Oct_Revenue,
-MAX(IF(month = 'Nov', revenue, NULL)) AS Nov_Revenue,
-MAX(IF(month = 'Dec', revenue, NULL)) AS Dec_Revenue
-FROM Department GROUP BY id;
+  MAX(IF(month = 'Jan', revenue, NULL)) AS Jan_Revenue,
+  MAX(IF(month = 'Feb', revenue, NULL)) AS Feb_Revenue,
+  MAX(IF(month = 'Mar', revenue, NULL)) AS Mar_Revenue,
+  MAX(IF(month = 'Apr', revenue, NULL)) AS Apr_Revenue,
+  MAX(IF(month = 'May', revenue, NULL)) AS May_Revenue,
+  MAX(IF(month = 'Jun', revenue, NULL)) AS Jun_Revenue,
+  MAX(IF(month = 'Jul', revenue, NULL)) AS Jul_Revenue,
+  MAX(IF(month = 'Aug', revenue, NULL)) AS Aug_Revenue,
+  MAX(IF(month = 'Sep', revenue, NULL)) AS Sep_Revenue,
+  MAX(IF(month = 'Oct', revenue, NULL)) AS Oct_Revenue,
+  MAX(IF(month = 'Nov', revenue, NULL)) AS Nov_Revenue,
+  MAX(IF(month = 'Dec', revenue, NULL)) AS Dec_Revenue
+FROM Department
+GROUP BY id;
 
 -- Q511
 -- Game Play Analysis 1
 -- 1. first login date
 SELECT player_id, MIN(event_date) AS first_login
 FROM Activity
-GROUP BY player_id
+GROUP BY player_id;
 
 -- Q512
 -- Game Play Analysis 2
@@ -201,39 +203,53 @@ GROUP BY player_id
 -- sub-query
 SELECT player_id, device_id
 FROM Activity
-WHERE (player_id, event_date) IN
-(SELECT player_id, MIN(event_date) AS first_login
- FROM Activity
- GROUP BY player_id);
+WHERE (player_id, event_date) IN (
+    SELECT player_id,
+      MIN(event_date) AS first_login
+    FROM Activity
+    GROUP BY player_id
+  );
 
 -- FIRST_VALUE and PARTITION BY
 -- must add DISTINCT
-SELECT
-DISTINCT player_id,
-FIRST_VALUE(device_id) OVER ( PARTITION BY player_id ORDER BY event_date) AS device_id
-FROM
-Activity;
+SELECT DISTINCT player_id,
+  FIRST_VALUE(device_id) OVER (
+    PARTITION BY player_id
+    ORDER BY event_date
+  ) AS device_id
+FROM Activity;
 
 -- Q534
 -- Game Play Analysis 3
 -- self join is useful, get cumsum
-SELECT a1.player_id, a1.event_date, SUM(a2.games_played) AS games_played_so_far 
-FROM Activity a1 Join Activity a2 
-ON a1.player_id = a2.player_id AND a1.event_date >= a2.event_date
-GROUP BY a1.player_id, a1.event_date
+SELECT a1.player_id, a1.event_date,
+  SUM(a2.games_played) AS games_played_so_far
+FROM Activity a1
+  Join Activity a2 ON a1.player_id = a2.player_id
+  AND a1.event_date >= a2.event_date
+GROUP BY a1.player_id,
+  a1.event_date;
 
 -- Q550
 -- Game Play Analysis 4
 -- if julianday worked, use it
 -- use * 1.0 to get float
 SELECT ROUND(
-  SUM(CASE WHEN a1.event_date - a2.first_login = 1 THEN 1 ELSE 0 END) * 1.0
-  / COUNT(DISTINCT a1.player_id), 2) AS fraction
-FROM Activity a1 Join
-(SELECT player_id, MIN(event_date) AS first_login
- FROM Activity
- GROUP BY player_id) a2 
-ON a1.player_id = a2.player_id
+    SUM(
+      CASE
+        WHEN a1.event_date - a2.first_login = 1 THEN 1
+        ELSE 0
+      END
+    ) * 1.0 / COUNT(DISTINCT a1.player_id),
+    2
+  ) AS fraction
+FROM Activity a1
+  Join (
+    SELECT player_id,
+      MIN(event_date) AS first_login
+    FROM Activity
+    GROUP BY player_id
+  ) a2 ON a1.player_id = a2.player_id;
 
 -- Q569
 -- Median Employee Salary
@@ -248,15 +264,38 @@ WHERE r.r in (MAX(c.c/2, (c.c+1)/2), c.c/2+1);
 
 -- Q570 easy
 SELECT e1.name
-FROM Employee e1 JOIN Employee e2
-ON e1.id = e2.Managerid
+FROM Employee e1
+  JOIN Employee e2 ON e1.id = e2.Managerid
 GROUP BY e1.id
 HAVING COUNT(e2.id) >= 5;
 
 -- Q574
 -- DESC: from big to small
-SELECT Name FROM Candidate 
-WHERE id = (SELECT CandidateId FROM Vote GROUP BY CandidateId ORDER BY COUNT(CandidateId) DESC LIMIT 1);
+SELECT Name
+FROM Candidate
+WHERE id = (
+    SELECT CandidateId
+    FROM Vote
+    GROUP BY CandidateId
+    ORDER BY COUNT(CandidateId) DESC
+    LIMIT 1
+  );
 
--- Q578
+-- Q579
+-- Cumulative Sum
+SELECT e1.Id, e1.Month, SUM(e2.Salary) AS Salary
+FROM Employee e1
+  JOIN Employee e2 ON e1.Id = e2.Id
+  AND e1.Month - e2.Month BETWEEN 0 AND 2
+GROUP BY e1.Id,
+  e1.Month
+HAVING (e1.Id, e1.Month) NOT IN (
+    SELECT Id, MAX(Month)
+    FROM Employee
+    GROUP BY Id
+  )
+ORDER BY e1.Id,
+  e1.Month DESC;
+
+-- Q580
 -- 

@@ -6,10 +6,10 @@ SELECT name FROM employees WHERE id NOT IN
 (SELECT DISTINCT e1.id FROM employees e1 JOIN employees e2
  ON e1.id = e2.managerId)
  ;
- -- I don't know why this is wrong:
- SELECT name FROM employees WHERE id NOT IN
- (SELECT managerId FROM employees)
- ;
+-- I don't know why this is wrong:
+SELECT name FROM employees WHERE id NOT IN
+(SELECT managerId FROM employees)
+;
 
 -- Q Regional Sales Comparison
 -- value and (max(value)-value)

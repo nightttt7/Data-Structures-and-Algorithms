@@ -297,5 +297,29 @@ HAVING (e1.Id, e1.Month) NOT IN (
 ORDER BY e1.Id,
   e1.Month DESC;
 
--- Q580
--- 
+-- Q580 easy
+-- Student Number in Departments
+SELECT d.dept_name,
+  count(s.student_id)
+FROM department d
+  LEFT JOIN student s On s.dept_id = d.dept_id
+GROUP BY d.dept_id;
+
+-- Q585
+-- sum of all total investment values in 2016
+WITH c1 AS (
+  SELECT TIV_2015
+  FROM insurance
+  GROUP BY TIV_2015
+  HAVING COUNT(PID) > 1
+),
+c2 AS (
+  SELECT LAT, LON
+  FROM insurance
+  GROUP BY LAT, LON
+  HAVING COUNT(PID) = 1
+)
+SELECT ROUND(SUM(TIV_2016) * 1.0, 2) AS TIV_2016
+FROM insurance
+WHERE TIV_2015 in c1
+  AND (LAT, LON) in c2;

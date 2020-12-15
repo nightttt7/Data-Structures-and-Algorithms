@@ -210,8 +210,8 @@ WHERE (player_id, event_date) IN (
     GROUP BY player_id
   );
 
--- FIRST_VALUE and PARTITION BY
--- must add DISTINCT
+-- FIRST_VALUE and PARTITION BY (similar with MIN/MAX() ... GROUP BY)
+-- NB! must add DISTINCT, FIRST_VALUE is a window function! a value for each row
 SELECT DISTINCT player_id,
   FIRST_VALUE(device_id) OVER (
     PARTITION BY player_id
@@ -250,6 +250,35 @@ FROM Activity a1
     FROM Activity
     GROUP BY player_id
   ) a2 ON a1.player_id = a2.player_id;
+
+-- Q1097 hard
+-- Game Play Analysis 5
+-- 3 sub-queries is necessary
+WITH m AS (
+  SELECT player_id,
+    min(event_date) AS install_dt
+  FROM Activity
+  GROUP BY player_id
+),
+i AS (
+  SELECT m.install_dt,
+    COUNT(m.player_id) AS installs
+  FROM m
+  GROUP BY m.install_dt
+),
+r AS (
+  SELECT m.install_dt,
+    sum(iif(a.event_date = m.install_dt + 1, 1, 0)) AS ret_count
+  FROM Activity a
+    JOIN m ON a.player_id = m.player_id
+  GROUP BY m.install_dt
+)
+SELECT i.install_dt,
+  i.installs,
+  round(r.ret_count / i.installs * 1.0, 2) AS Day1_retention
+FROM i
+  JOIN r ON i.install_dt = r.install_dt
+;
 
 -- Q569
 -- Median Employee Salary
@@ -323,3 +352,149 @@ SELECT ROUND(SUM(TIV_2016) * 1.0, 2) AS TIV_2016
 FROM insurance
 WHERE TIV_2015 in c1
   AND (LAT, LON) in c2;
+
+-- Q615
+WITH avg_dep AS (
+  SELECT e.department_id,
+    pay_date,
+    AVG(s.amount) AS amount
+  FROM salary s
+    JOIN employee e ON s.employee_id = e.employee_id
+  GROUP BY e.department_id,
+    pay_date
+),
+avg_com AS (
+  SELECT pay_date,
+    avg(amount) AS amount
+  FROM salary
+  GROUP BY pay_date
+)
+SELECT strftime("%Y-%m", avg_dep.pay_date) AS pay_month,
+  avg_dep.department_id,
+  (
+    CASE
+      WHEN avg_dep.amount > avg_com.amount THEN "higher"
+      WHEN avg_dep.amount = avg_com.amount THEN "same"
+      WHEN avg_dep.amount < avg_com.amount THEN "lower"
+    END
+  ) AS comparison
+FROM avg_dep
+  JOIN avg_com ON avg_dep.pay_date = avg_com.pay_date;
+
+-- Q618
+-- pivot
+
+-- 1. use LEFT JOIN, the problem is can't rename to America, Asia and Europe
+WITH r AS (
+  SELECT name,
+    continent,
+    ROW_NUMBER() OVER(
+      PARTITION BY continent
+      ORDER BY name
+    ) AS row_n
+  FROM student
+)
+SELECT am.name AS Americ,
+  IFNULL(asia.name, "") AS Asi,
+  IFNULL(e.name, "") AS europ
+FROM r am
+  LEFT JOIN r asia ON am.row_n = asia.row_n
+  AND asia.continent = "Asia"
+  LEFT JOIN r e ON am.row_n = e.row_n
+  AND e.continent = "Europe"
+WHERE am.continent = "America";
+
+-- 2. use case
+-- think about "MAX": if we want the original value from group, use MAX()!
+WITH r AS (
+  SELECT name,
+    continent,
+    ROW_NUMBER() OVER(
+      PARTITION BY continent
+      ORDER BY name
+    ) AS row_n
+  FROM student
+)
+SELECT 
+  MAX(CASE WHEN r.continent = "America" THEN r.name ELSE "" END ) AS America,
+  MAX(CASE WHEN r.continent = "Asia" THEN r.name ELSE "" END ) AS Asia,
+  MAX(CASE WHEN r.continent = "Europe" THEN r.name ELSE "" END ) AS Europe
+FROM r
+GROUP BY row_n;
+
+-- Q1045
+-- Customers Who Bought All Products
+SELECT customer_id
+FROM (
+    SELECT customer_id,
+      COUNT(DISTINCT product_key) AS c
+    FROM Customer
+    GROUP BY customer_id
+  )
+WHERE c = (
+    SELECT COUNT(DISTINCT product_key)
+    FROM Product
+  );
+-- NB! this structure (a grouped result with a where)
+-- could be simplified to HAVING
+SELECT customer_id
+FROM Customer
+GROUP BY customer_id
+HAVING COUNT(DISTINCT product_key) = (
+    SELECT COUNT(DISTINCT product_key)
+    FROM Product;
+
+-- Q1158
+-- User, Orders and Items
+-- use SUM(IIF(condition)) to count 0
+SELECT o.buyer_id,
+  u.join_date,
+  SUM(
+    IIF(
+      o.order_date >= "2019-01-01"
+      AND o.order_date < "2020-01-01",
+      1,
+      0
+    )
+  )
+FROM Users u
+  LEFT JOIN Orders o ON u.user_id = o.buyer_id
+GROUP BY o.buyer_id;
+
+-- Q1159
+-- the second sold
+WITH r AS (
+  SELECT seller_id,
+    item_id,
+    ROW_NUMBER() OVER(
+      PARTITION BY seller_id
+      ORDER BY order_date
+    ) AS row_n
+  FROM Orders
+),
+s AS (
+  SELECT seller_id,
+    item_id
+  FROM r
+  WHERE row_n = 2
+)
+SELECT user_id AS seller_id,
+  IIF(
+    s.item_id IS NULL,
+    "no",
+    IIF(s.item_id = i.item_id, "yes", "no")
+  ) AS "2nd_item_fav_brand"
+FROM Users u
+  LEFT JOIN Items i ON u.favorite_brand = i.item_brand
+  LEFT JOIN s ON s.seller_id = u.user_id;
+
+-- use NTH_VALUE()
+-- but not work as expected, DISTINCT not working here
+WITH s AS (
+  SELECT DISTINCT seller_id,
+    NTH_VALUE(item_id, 2) OVER(
+      PARTITION BY seller_id
+      ORDER BY order_date
+    ) AS "second_item"
+  FROM Orders
+);

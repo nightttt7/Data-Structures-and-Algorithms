@@ -90,3 +90,31 @@ def solve(tree):
 # expression = "( 3 + ( 4 * 5 ) )"
 # t = parse_tree(expression)
 # a = solve(t)
+
+
+# Tree Traversals
+# 1. preorder method
+def preorder(tree):
+    if tree:
+        print(tree.val)  # or other codes that operate tree.val
+        preorder(tree.left_child)
+        preorder(tree.right_child)
+# parent part, left part, right part
+
+
+# 2. postordeer method
+def preorder(tree):
+    if tree:
+        preorder(tree.left_child)
+        preorder(tree.right_child)
+        print(tree.val)
+# left part, right part, parent part
+
+
+# 3. inorder method
+def preorder(tree):
+    if tree:
+        preorder(tree.left_child)
+        print(tree.val)
+        preorder(tree.right_child)
+# left part, parent part, right part

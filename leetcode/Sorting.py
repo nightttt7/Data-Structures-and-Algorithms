@@ -99,6 +99,7 @@ def shell_sort(nums):
 def adjust_heap(nums, i, n):
     # the max of parent and 2 children move to parent
     # then treat parent as the new
+    # the stop rules is little complex, attention
     left = 2*i+1
     right = 2*i+2
     max_ = i
@@ -114,7 +115,7 @@ def adjust_heap(nums, i, n):
 
 
 def creat_heap(nums, n):
-    # Max-heap: a node can't have a greater value than its parent
+    # Max-heap: nodes can't have a greater value than its parent
     for i in reversed(range(n//2)):
         adjust_heap(nums, i, n)
 

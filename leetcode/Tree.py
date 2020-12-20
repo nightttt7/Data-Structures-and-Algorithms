@@ -446,20 +446,30 @@ class BBST(BST):
         # the order of codes below most important
         root = node
         new_root = root.right
+        # connect between root and new_root.left
+        # if new_root.left is None, just right, let root.right be None
         root.right = new_root.left
-        # left of new_root (if it's not None) be right of root
+        # if new_root.left is None, no need to do this
         if new_root.left is not None:
             new_root.left.parent = root
-
-
-        new_root.parent = root.parent
+        # conncet new_root to tree
+        if root.parent is None:
+            self.root = new_root
+        elif root.parent.left == root:
+            root.parent.left = new_root
+        else:
+            root.parent.right = new_root
+        # connect between new_root and root
+        new_root.left = root
         root.parent = new_root
+        # update balance, 2 lines enough, not use update_balance()
+        root.balance_factor = (
+            root.balance_factor + 1 - min(new_root.balance_factor, 0))
+        new_root.balance_factor = (
+            new_root.balance_factor + 1 + max(root.balance_factor, 0))
 
     def rotate_right(self, node):
-        root = node
-        newroot = root.left
-        new
-       
+        pass
 
     def __delitem__(self, key):
         pass

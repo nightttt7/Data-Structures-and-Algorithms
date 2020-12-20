@@ -57,7 +57,7 @@ class HashTable:
 
 
 # Implementation 2. Tree
-# TODO: (1). Self-balancing binary search trees (common approach)
-
+# (1). Self-balancing binary search trees (common approach)
+# see "Tree.py/Balanced Binary Search Trees"
 # (2). unbalanced binary search tree
 # see "Tree.py/Binary Search Trees"

@@ -4,9 +4,10 @@
 # nodes: ancestor, descendant
 # degree of node: number of childern
 # degree of tree: maximum number of childern in tree
-# level: root in level 1, any childern level is parent level + 1
-# depth/height: maximum level in tree
 # edge: connects two nodes
+# level: root in level 1, any childern level is parent level + 1
+# height: maximum number of edges from node to leaf, max(level_leaf-level_node)
+# depth: number of edges form node to root (level_node-1)
 # path: ordered list of nodes that are connected by edges
 # binary tree: maximum two children
 
@@ -195,6 +196,7 @@ class TreeNode:
         self.left = left
         self.right = right
         self.parent = parent
+        self.balance_factor = 0
 
     def update(self, key, val, left, right):
         self.key = key
@@ -231,6 +233,7 @@ class BST:
         return self.root.__iter__()
 
     # to use recursion, must divide into 2 function
+    # best case: O(log(n)), worst case: o(n)
     def __setitem__(self, key, val):
         if self.root is None:
             self.root = TreeNode(key, val)
@@ -320,6 +323,8 @@ class BST:
                 successor.parent.right = None
             node.key = successor.key
             node.val = successor.val
+        # 3 cases for each below:
+        # node is left child, right child or root (no parent)
         # only left
         elif node.left:
             if node.parent:
@@ -375,3 +380,89 @@ class BST:
 
 # Balanced Binary Search Trees
 # also AVL tree (named for its inventors: G.M. Adelson-Velskii and E.M. Landis)
+class BBST(BST):
+
+    def _set(self, key, val, node):
+        if key < node.key:
+            if node.left is None:
+                node.left = TreeNode(key, val, parent=node)
+                # new codes
+                self.update_balance(node.left)
+            else:
+                self._set(key, val, node.left)
+        else:
+            if node.right is None:
+                node.right = TreeNode(key, val, parent=node)
+                # new codes
+                self.update_balance(node.right)
+            else:
+                self._set(key, val, node.right)
+
+    # find the unbalanced subtree with max depth
+    def update_balance(self, node):
+        # base case
+        if abs(node.balance_factor) > 1:
+            self.rabalance(node)
+        # move on
+        elif node.parent:
+            if node.left:
+                node.parent.balance_factor += 1
+            elif node.right:
+                node.parent.balance_factor -= 1
+            if node.parent.balance_factor != 0:
+                # call self
+                self.update_balance(node.parent)
+
+    def rebalance(self, node):
+        # node is right heavy (here balance_factor = -2)
+        if node.balance_factor < 0:
+            # right child is left heavy (here balance_factor = 1)
+            if node.right.balance_factor > 0:
+                self.rotate_right(node.right)
+                self.rotate_left(node)
+            # right child not left heavy
+            else:
+                self.rotate_left(node)
+        # node is left heavy (here balance_factor = 2)
+        if node.balance_factor > 0:
+            # left child is right heavy (here balance_factor = -1)
+            if node.left.balance_factor < 0:
+                # use this case as example:
+                # left will be new root, root will be new right
+                # right of left will be new left of new right (level unchange)
+                # left of left will be new left (level-1)
+                # level of left of left can't be smaller than right of left
+                # (that is, left.balance_factor can't < 0)
+                # so we rotate_left left at first
+                self.rotate_left(node.left)
+                self.rotate_right(node)
+            # right child not right heavy
+            else:
+                self.rotate_right(node)
+
+    # to rotate from right to left (to let left heavier)
+    # need to move root right
+    def rotate_left(self, node):
+        # the order of codes below most important
+        root = node
+        new_root = root.right
+        root.right = new_root.left
+        # left of new_root (if it's not None) be right of root
+        if new_root.left is not None:
+            new_root.left.parent = root
+
+
+        new_root.parent = root.parent
+        root.parent = new_root
+
+    def rotate_right(self, node):
+        root = node
+        newroot = root.left
+        new
+       
+
+    def __delitem__(self, key):
+        pass
+
+    def _remove(self, node):
+        pass

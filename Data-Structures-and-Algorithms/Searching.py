@@ -1,4 +1,5 @@
-# references: https://runestone.academy/runestone/books/published/pythonds/SortSearch/searching.html
+# references:
+#   https://runestone.academy/runestone/books/published/pythonds/SortSearch/searching.html
 
 
 # 1. Sequential Search: from start to end one by one

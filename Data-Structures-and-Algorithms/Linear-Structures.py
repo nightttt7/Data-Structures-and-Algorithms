@@ -1,3 +1,7 @@
+# references:
+#   https://runestone.academy/runestone/books/published/pythonds/BasicDS/toctree.html
+
+
 from copy import deepcopy
 
 

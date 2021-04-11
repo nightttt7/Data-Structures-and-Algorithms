@@ -1,4 +1,6 @@
-# Tree
+# references:
+#   https://runestone.academy/runestone/books/published/pythonds/Trees/toctree.html
+
 
 # nodes: root, branches, leaves; childrem, parent, sibling
 # nodes: ancestor, descendant

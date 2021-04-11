@@ -1,3 +1,9 @@
 - practice codes
 - save for reviewing
-- references: [Python cookbook 3](https://www.oreilly.com/library/view/python-cookbook-3rd/9781449357337/), [liaoxuefeng](https://www.liaoxuefeng.com/wiki/1016959663602400), [MDN](https://developer.mozilla.org/en-US/), [leetcode](https://leetcode.com/), [python数据结构与算法学习路线及系列文章汇总](https://blog.csdn.net/xutiantian1412/article/details/82928800)
+- references: 
+    - [Python cookbook 3](https://www.oreilly.com/library/view/python-cookbook-3rd/9781449357337/)
+    - [liaoxuefeng](https://www.liaoxuefeng.com/wiki/1016959663602400)
+    - [MDN](https://developer.mozilla.org/en-US/)
+    - [leetcode](https://leetcode.com/)
+    - [python数据结构与算法学习路线及系列文章汇总](https://blog.csdn.net/xutiantian1412/article/details/82928800)
+    - [Problem Solving with Algorithms and Data Structures using Python](https://runestone.academy/runestone/books/published/pythonds/index.html)

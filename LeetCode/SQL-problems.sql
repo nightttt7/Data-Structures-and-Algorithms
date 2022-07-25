@@ -442,7 +442,7 @@ FROM Customer
 GROUP BY customer_id
 HAVING COUNT(DISTINCT product_key) = (
     SELECT COUNT(DISTINCT product_key)
-    FROM Product;
+    FROM Product);
 
 -- Q1158
 -- User, Orders and Items

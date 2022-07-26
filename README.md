@@ -1,5 +1,3 @@
-- practice codes
-- save for reviewing
 - references: 
     - [Python cookbook 3](https://www.oreilly.com/library/view/python-cookbook-3rd/9781449357337/)
     - [liaoxuefeng](https://www.liaoxuefeng.com/wiki/1016959663602400)
